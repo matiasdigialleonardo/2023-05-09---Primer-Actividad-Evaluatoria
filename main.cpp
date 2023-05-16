@@ -1,6 +1,9 @@
 #include <iostream>
 #include <vector>
 #include <algorithm>
+#include <json.hpp>
+
+using json = nlohmann::json;
 
 class IListable
 {
@@ -116,7 +119,7 @@ class VideoMedia : public IListable
             m_nodeName = nodeName;
         }
 
-        virtual ~VideoMedia(){}
+        ~VideoMedia(){}
 
         void list(int depth)//operation
         {
@@ -129,6 +132,7 @@ class AudioMedia : public IListable
 {
     private:
         std::string m_nodeName;
+        json metaData;
 
     public:
         AudioMedia(std::string nodeName)
@@ -136,7 +140,17 @@ class AudioMedia : public IListable
             m_nodeName = nodeName;
         }
 
-        virtual ~AudioMedia(){}
+        ~AudioMedia(){}
+
+        void setAuthor(std::string author)
+        {
+            metaData["Author"] = author;
+        }
+
+        std::string getAuthor()
+        {
+            return metaData["Author"];
+        }
 
         void list(int depth)//operation
         {
@@ -153,13 +167,16 @@ int main()
     Library* toKillALivingBook = new SoundTrack("To Kill a Living Book");
     toKillALivingBook->add(new AudioMedia("String Theocracy"));
     toKillALivingBook->add(new AudioMedia("Iron Lotus"));
-
     soundTracks->add(toKillALivingBook);
-    
+
+    AudioMedia* goneAngels = new AudioMedia("Gone Angels");
+    goneAngels->setAuthor("Mili");
+    std::cout << goneAngels->getAuthor();
+
+    std::cout << std::endl;
+
+
     soundTracks->list(1);
-
-
-
 
     return 0;
 }
